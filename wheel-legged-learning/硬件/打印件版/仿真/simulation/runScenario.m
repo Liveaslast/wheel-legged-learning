@@ -23,6 +23,12 @@ end
 validateattributes(cfg.stopTime, {'numeric'}, {'scalar','finite','positive'});
 in = in.setModelParameter('StopTime', num2str(cfg.stopTime), ...
     'ReturnWorkspaceOutputs','on');
+if isfield(cfg, 'showAnimation')
+    validateattributes(cfg.showAnimation, {'logical'}, {'scalar'});
+    animationOptions = {'off', 'on'};
+    in = in.setModelParameter('SimMechanicsOpenEditorOnUpdate', ...
+        animationOptions{1 + cfg.showAnimation});
+end
 out = sim(in);
 end
 
