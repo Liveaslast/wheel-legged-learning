@@ -1,4 +1,8 @@
-function K = get_k_length(leg_length)
+function [K,A,B] = get_k_length(leg_length,q_diag,r_diag)
+    % 标称腿长和两组权重均由调用方明确提供，不使用隐藏默认值。
+    validateattributes(leg_length, {'numeric'}, {'scalar','real','finite','positive'});
+    validateattributes(q_diag, {'numeric'}, {'vector','numel',6,'real','finite','positive'});
+    validateattributes(r_diag, {'numeric'}, {'vector','numel',2,'real','finite','positive'});
    
     %theta : 摆杆与竖直方向夹角             R   ：驱动轮半径
     %x     : 驱动轮位移                    L   : 摆杆重心到驱动轮轴距离
@@ -47,13 +51,9 @@ function K = get_k_length(leg_length)
     B=subs(B,[R,L,LM,l,mw,mp,M,Iw,Ip,IM,g],[R1,L1,LM1,l1,mw1,mp1,M1,Iw1,Ip1,IM1,9.8]);
     B=double(B);
   
-%     Q=diag([20 0.1 80 110 700 1]);
-%     R=[90 0;0 4];                %T Tp
-%        Q=diag([1 1 50 1 500 1]);
-%         R=[240 0;0 25];
-
-   Q=diag([1 0.07 10 5 300 0.6]);
-   R=[20 0;0,1];                %T Tp
+   % 根据指定状态权重和输入权重求解反馈矩阵。
+   Q=diag(q_diag);
+   R=diag(r_diag);              % 输入依次为驱动轮力矩、虚拟腿力矩。
 
    K=lqr(A,B,Q,R);
   

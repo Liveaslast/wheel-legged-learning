@@ -1,9 +1,10 @@
 %计算不同腿长下适合的K矩阵，再进行多项式拟合，得到2*6矩阵每个参数对应的多项式参数
 tic
+cfg=set_config(); % 离线拟合也使用配置文件中的权重。
 j=1;
 leg=0.1:0.01:0.21                                                                            ;
 for i=leg
-    k=get_k_length(i);
+    k=get_k_length(i,cfg.lqrQ,cfg.lqrR);
     k11(j) = k(1,1);
     k12(j) = k(1,2);
     k13(j) = k(1,3);
